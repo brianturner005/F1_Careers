@@ -1,16 +1,16 @@
 name: Deploy
 
-# NOTE: this deploys apps/api and apps/collectors as-is from their own
-# directories. Because @f1-job-radar/schema and @f1-job-radar/db are npm
-# workspace-local packages (resolved via root-level node_modules symlinks,
-# not published to any registry), Azure's remote (Oryx) build cannot resolve
-# them if it only sees `apps/api` or `apps/collectors` in isolation. Before
-# this workflow can deploy successfully, pick one:
+# NOTE: this deploys apps/api, apps/collectors, and apps/alerts as-is from
+# their own directories. Because @f1-job-radar/schema, @f1-job-radar/db, and
+# @f1-job-radar/email are npm workspace-local packages (resolved via
+# root-level node_modules symlinks, not published to any registry), Azure's
+# remote (Oryx) build cannot resolve them if it only sees one app directory in
+# isolation. Before this workflow can deploy successfully, pick one:
 #   (a) bundle each Function App with esbuild into a single dist file that
 #       inlines the workspace packages, or
-#   (b) publish @f1-job-radar/schema and @f1-job-radar/db to a registry
-#       (e.g. GitHub Packages) and depend on a real version range instead of
-#       the `*` workspace protocol.
+#   (b) publish the @f1-job-radar/* packages to a registry (e.g. GitHub
+#       Packages) and depend on a real version range instead of the `*`
+#       workspace protocol.
 # Tracked as a Phase 0 -> Phase 1 follow-up; left unresolved here since it
 # can't be verified without real Azure credentials.
 
@@ -43,6 +43,10 @@ jobs:
           path: apps/collectors
       - uses: actions/upload-artifact@v4
         with:
+          name: alerts-dist
+          path: apps/alerts
+      - uses: actions/upload-artifact@v4
+        with:
           name: web-dist
           path: apps/web/dist
 
@@ -73,6 +77,20 @@ jobs:
           app-name: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_NAME }}
           package: apps/collectors
           publish-profile: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+  deploy-alerts:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: alerts-dist
+          path: apps/alerts
+      - uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_NAME }}
+          package: apps/alerts
+          publish-profile: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_PUBLISH_PROFILE }}
 
   deploy-web:
     needs: build

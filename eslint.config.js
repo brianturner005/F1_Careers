@@ -26,6 +26,10 @@ export default [
     rules: {
       ...tseslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      // TypeScript itself already catches genuinely undefined references;
+      // no-undef doesn't know about ambient/lib types (NodeJS, HeadersInit,
+      // RequestInit, etc.) and flags them as false positives.
+      'no-undef': 'off',
     },
   },
   eslintConfigPrettier,

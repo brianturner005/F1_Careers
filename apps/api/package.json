@@ -13,6 +13,7 @@
   "dependencies": {
     "@azure/functions": "^4.6.1",
     "@f1-job-radar/db": "*",
+    "@f1-job-radar/email": "*",
     "@f1-job-radar/schema": "*"
   },
   "devDependencies": {

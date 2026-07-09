@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { Job } from '@f1-job-radar/schema';
 import { CATEGORIES, EMPLOYMENT_TYPES, WORKPLACE_TYPES } from '@f1-job-radar/schema';
 import { fetchJobs, type JobFilters } from './api.js';
@@ -7,10 +8,12 @@ type LoadState = 'loading' | 'ready' | 'error';
 
 interface JobsFeedProps {
   companies: string[];
+  filters: JobFilters;
+  onFiltersChange: (filters: JobFilters) => void;
+  saveSearchSlot?: ReactNode;
 }
 
-export function JobsFeed({ companies }: JobsFeedProps) {
-  const [filters, setFilters] = useState<JobFilters>({});
+export function JobsFeed({ companies, filters, onFiltersChange, saveSearchSlot }: JobsFeedProps) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [total, setTotal] = useState(0);
   const [state, setState] = useState<LoadState>('loading');
@@ -34,7 +37,7 @@ export function JobsFeed({ companies }: JobsFeedProps) {
   }, [filters]);
 
   function updateFilter(key: keyof JobFilters, value: string): void {
-    setFilters((prev) => ({ ...prev, [key]: value || undefined }));
+    onFiltersChange({ ...filters, [key]: value || undefined });
   }
 
   return (
@@ -95,6 +98,8 @@ export function JobsFeed({ companies }: JobsFeedProps) {
           ))}
         </select>
       </form>
+
+      {saveSearchSlot}
 
       {state === 'loading' && <p>Loading jobs…</p>}
       {state === 'error' && <p>Couldn&apos;t load jobs. Try again shortly.</p>}

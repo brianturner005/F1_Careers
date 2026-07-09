@@ -86,6 +86,8 @@ export interface ListOpenJobsOptions {
   employmentType?: string;
   /** Case-insensitive substring match against title + description. */
   search?: string;
+  /** ISO timestamp; only jobs first seen strictly after this are returned. Used by the alert digest worker. */
+  firstSeenAfter?: string;
 }
 
 export interface ListOpenJobsResult {
@@ -136,6 +138,10 @@ export async function listOpenJobs(options: ListOpenJobsOptions = {}): Promise<L
     conditions.push(
       "(title LIKE @search ESCAPE '\\' OR description_excerpt LIKE @search ESCAPE '\\')",
     );
+  }
+  if (options.firstSeenAfter) {
+    request.input('firstSeenAfter', sql.DateTime2, new Date(options.firstSeenAfter));
+    conditions.push('first_seen_at > @firstSeenAfter');
   }
 
   const result = await request.query<JobRow & { total_count: number }>(`
