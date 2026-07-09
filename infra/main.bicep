@@ -29,7 +29,10 @@ param resendApiKey string = ''
 param emailFrom string = ''
 
 var uniqueSuffix = uniqueString(resourceGroup().id)
-var storageAccountName = toLower('${prefix}st${uniqueSuffix}')
+// Storage account names must be 3-24 chars, so the prefix is capped to leave room for
+// the 'st' marker (2 chars) and the uniqueString suffix (always 13 chars): 24 - 2 - 13 = 9.
+var storageNamePrefix = take(toLower(replace(prefix, '-', '')), 9)
+var storageAccountName = '${storageNamePrefix}st${uniqueSuffix}'
 var appInsightsName = '${prefix}-${environmentName}-ai'
 var sqlServerName = toLower('${prefix}-${environmentName}-sql-${uniqueSuffix}')
 var sqlDatabaseName = '${prefix}db'
