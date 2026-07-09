@@ -1,0 +1,26 @@
+{
+  "total": 3,
+  "jobPostings": [
+    {
+      "title": "Senior Site Reliability Engineer",
+      "externalPath": "/job/Milton-Keynes/Senior-Site-Reliability-Engineer_R-10021",
+      "locationsText": "Milton Keynes, United Kingdom",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": ["R-10021"]
+    },
+    {
+      "title": "Graduate Aerodynamicist",
+      "externalPath": "/job/Milton-Keynes/Graduate-Aerodynamicist_R-10022",
+      "locationsText": "Milton Keynes, United Kingdom",
+      "postedOn": "Posted Today",
+      "bulletFields": ["R-10022"]
+    },
+    {
+      "title": "Composite Laminator",
+      "externalPath": "/job/Milton-Keynes/Composite-Laminator_R-10023",
+      "locationsText": "Milton Keynes, United Kingdom",
+      "postedOn": "Posted Yesterday",
+      "bulletFields": ["R-10023"]
+    }
+  ]
+}

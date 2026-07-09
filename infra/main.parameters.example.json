@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": { "value": "f1jobradar" },
+    "environmentName": { "value": "dev" },
+    "sqlAdminLogin": { "value": "REPLACE_ME" },
+    "sqlAdminPassword": { "value": "REPLACE_ME" }
+  }
+}
