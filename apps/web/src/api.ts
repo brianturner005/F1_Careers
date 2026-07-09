@@ -1,4 +1,10 @@
-import type { AlertFrequency, Job, SavedSearch, Source } from '@f1-job-radar/schema';
+import type {
+  AlertFrequency,
+  HiringTrendPoint,
+  Job,
+  SavedSearch,
+  Source,
+} from '@f1-job-radar/schema';
 
 export interface JobsResponse {
   jobs: Job[];
@@ -142,4 +148,24 @@ export async function deleteSavedSearch(id: string): Promise<void> {
   if (!response.ok && response.status !== 204) {
     throw new Error(`Failed to delete saved search: ${response.status}`);
   }
+}
+
+export async function fetchHiringTrends(
+  weeks = 12,
+): Promise<{ trends: HiringTrendPoint[]; weeks: number }> {
+  const response = await fetch(`${API_BASE_URL}/api/analytics/hiring-trends?weeks=${weeks}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch hiring trends: ${response.status}`);
+  }
+  return response.json() as Promise<{ trends: HiringTrendPoint[]; weeks: number }>;
+}
+
+export async function fetchNewThisWeek(limit = 50, offset = 0): Promise<JobsResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/jobs/new-this-week?limit=${limit}&offset=${offset}`,
+  );
+  if (!response.ok) {
+    throw new Error(`Failed to fetch new-this-week jobs: ${response.status}`);
+  }
+  return response.json() as Promise<JobsResponse>;
 }

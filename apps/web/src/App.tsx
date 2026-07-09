@@ -9,16 +9,23 @@ import {
   type JobFilters,
 } from './api.js';
 import { About } from './About.js';
+import { HiringTrends } from './HiringTrends.js';
 import { JobsFeed } from './JobsFeed.js';
+import { NewThisWeek } from './NewThisWeek.js';
 import { SaveSearchForm } from './SaveSearchForm.js';
 import { SavedSearches } from './SavedSearches.js';
 import { SignIn } from './SignIn.js';
 import { SourceHealth } from './SourceHealth.js';
 
-type View = 'feed' | 'health' | 'saved' | 'signin' | 'about';
+type View = 'feed' | 'health' | 'trends' | 'new' | 'saved' | 'signin' | 'about';
+
+const PATH_TO_VIEW: Record<string, View> = {
+  '/about': 'about',
+  '/new-this-week': 'new',
+};
 
 export function App() {
-  const [view, setView] = useState<View>(window.location.pathname === '/about' ? 'about' : 'feed');
+  const [view, setView] = useState<View>(PATH_TO_VIEW[window.location.pathname] ?? 'feed');
   const [sources, setSources] = useState<Source[]>([]);
   const [filters, setFilters] = useState<JobFilters>({});
   const [email, setEmail] = useState<string | null>(null);
@@ -55,8 +62,14 @@ export function App() {
           <button type="button" onClick={() => setView('feed')} aria-pressed={view === 'feed'}>
             Jobs
           </button>
+          <button type="button" onClick={() => setView('new')} aria-pressed={view === 'new'}>
+            New This Week
+          </button>
           <button type="button" onClick={() => setView('health')} aria-pressed={view === 'health'}>
             Source Health
+          </button>
+          <button type="button" onClick={() => setView('trends')} aria-pressed={view === 'trends'}>
+            Hiring Trends
           </button>
           {email && (
             <button type="button" onClick={() => setView('saved')} aria-pressed={view === 'saved'}>
@@ -93,7 +106,9 @@ export function App() {
           saveSearchSlot={email ? <SaveSearchForm filters={filters} /> : undefined}
         />
       )}
+      {view === 'new' && <NewThisWeek />}
       {view === 'health' && <SourceHealth sources={sources} />}
+      {view === 'trends' && <HiringTrends />}
       {view === 'saved' && email && <SavedSearches />}
       {view === 'signin' && <SignIn />}
       {view === 'about' && <About />}

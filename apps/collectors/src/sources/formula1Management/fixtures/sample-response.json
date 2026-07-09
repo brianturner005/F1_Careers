@@ -1,0 +1,19 @@
+{
+  "total": 2,
+  "jobPostings": [
+    {
+      "title": "Broadcast Systems Engineer",
+      "externalPath": "/job/Biggin-Hill/Broadcast-Systems-Engineer_R-40011",
+      "locationsText": "Biggin Hill, United Kingdom",
+      "postedOn": "Posted 4 Days Ago",
+      "bulletFields": ["R-40011"]
+    },
+    {
+      "title": "Commercial Rights Analyst",
+      "externalPath": "/job/London/Commercial-Rights-Analyst_R-40012",
+      "locationsText": "London, United Kingdom",
+      "postedOn": "Posted Today",
+      "bulletFields": ["R-40012"]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # F1 Job Radar — Source Survey
 
-Last updated: 2026-07-09 (Phase 1: added Mercedes, Alpine, Aston Martin, Cadillac collectors)
+Last updated: 2026-07-09 (Phase 3: added Formula 1 Management; researched supplier/adjacent-series sources)
 
 This document tracks, per source, the official careers URL, the underlying ATS
 platform, and whether a public JSON endpoint exists that a collector can use
@@ -33,18 +33,35 @@ do not assume the payload below is byte-exact.**
 Collectors implemented so far (behind fixture-based unit tests; none
 verified against a live response — see the limitation note above):
 
-| Source id                       | Team                  | ATS      | Status                      |
-| ------------------------------- | --------------------- | -------- | --------------------------- |
-| `workday-red-bull-racing`       | Red Bull Racing       | Workday  | Implemented — Phase 0 pilot |
-| `workday-mercedes-amg-petronas` | Mercedes-AMG Petronas | Workday  | Implemented — Phase 1       |
-| `workday-alpine`                | Alpine                | Workday  | Implemented — Phase 1       |
-| `pinpoint-aston-martin`         | Aston Martin Aramco   | Pinpoint | Implemented — Phase 1       |
-| `workable-cadillac`             | Cadillac F1           | Workable | Implemented — Phase 1       |
+| Source id                       | Team                         | ATS      | Status                      |
+| ------------------------------- | ---------------------------- | -------- | --------------------------- |
+| `workday-red-bull-racing`       | Red Bull Racing              | Workday  | Implemented — Phase 0 pilot |
+| `workday-mercedes-amg-petronas` | Mercedes-AMG Petronas        | Workday  | Implemented — Phase 1       |
+| `workday-alpine`                | Alpine                       | Workday  | Implemented — Phase 1       |
+| `pinpoint-aston-martin`         | Aston Martin Aramco          | Pinpoint | Implemented — Phase 1       |
+| `workable-cadillac`             | Cadillac F1                  | Workable | Implemented — Phase 1       |
+| `workday-formula1-management`   | Formula One Management (FOM) | Workday  | Implemented — Phase 3       |
 
 Not yet built — ATS still unconfirmed (see table below): Racing Bulls
 (VCARB), Ferrari, McLaren, Williams, Haas F1, Audi F1 (ex-Sauber). Each needs
 a manual "view source" / network-tab check from an unrestricted machine
 before a collector can be written for it.
+
+## Phase 3: supplier / adjacent-series research (brief §6.2)
+
+| Source                     | Careers URL                                                     | ATS                                                            | Status                                                                                                                         |
+| -------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Formula One Management     | corp.formula1.com/careers → formulaone.wd3.myworkdayjobs.com/F1 | Workday                                                        | **Implemented** — same client as the 3 team sources                                                                            |
+| Pirelli (incl. Motorsport) | jobs.pirelli.com, pirelli.hire.trakstar.com                     | **Trakstar** — confirmed via URL, new ATS we don't support yet | Identified, not implemented — would need a new client for one source; lower priority than a 4th/5th Workday or Pinpoint source |
+| McLaren Applied            | mclarencareers.mclaren.com (shared with McLaren Racing)         | Unknown                                                        | Unverified                                                                                                                     |
+| Cosworth                   | cosworth.com/careers                                            | Unknown                                                        | Unverified                                                                                                                     |
+| Bosch Motorsport           | bosch-motorsport.com/careers                                    | Unknown                                                        | Unverified                                                                                                                     |
+| Formula E                  | careers.fiaformulae.com                                         | Unknown                                                        | Unverified                                                                                                                     |
+
+FOM shares infrastructure with Red Bull/Mercedes/Alpine (same Workday CXS
+pattern), so it was effectively free to add once the generic client existed.
+Everything else in this table needs the same manual verification as the
+6 unconfirmed F1 teams above before a collector is worth building for it.
 
 ## Summary table
 

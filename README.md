@@ -5,12 +5,12 @@ technology partners — normalized from each team's own careers site, with
 accounts, saved searches, and email alerts. See `docs/` for the full project
 brief and source survey.
 
-## Status: Phase 2 (in progress)
+## Status: Phase 3 (in progress)
 
-Five sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
+Six sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
 SQL → API → web feed:
 
-- Red Bull Racing, Mercedes-AMG Petronas, Alpine — all Workday
+- Red Bull Racing, Mercedes-AMG Petronas, Alpine, Formula One Management — all Workday
 - Aston Martin Aramco — Pinpoint
 - Cadillac F1 — Workable
 
@@ -23,8 +23,16 @@ delete). Real email sending needs a Resend API key configured at deploy time
 (see `infra/README.md`); without one, both the API and alerts worker
 console-log emails instead of sending them.
 
+Phase 3 additions: a Hiring Trends view (postings-opened-per-company over a
+configurable window, derived entirely from existing `first_seen_at`
+history — no new data collection needed) and a "New This Week" shareable
+page grouped by team.
+
 Remaining Phase 1 work: the 6 teams whose ATS platform is still unconfirmed
-(Racing Bulls, Ferrari, McLaren, Williams, Haas, Audi) — see
+(Racing Bulls, Ferrari, McLaren, Williams, Haas, Audi), plus several
+supplier/adjacent-series sources researched but not yet built (Pirelli is
+confirmed on Trakstar — a new ATS we don't support yet; McLaren Applied,
+Cosworth, Bosch Motorsport, and Formula E remain unconfirmed) — see
 `docs/sources.md` for status per source.
 
 ## Structure

@@ -10,3 +10,4 @@ export * from './magicLinkRepository.js';
 export * from './sessionsRepository.js';
 export * from './savedSearchesRepository.js';
 export * from './alertLogRepository.js';
+export * from './analyticsRepository.js';
