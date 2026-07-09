@@ -1,0 +1,19 @@
+[
+  {
+    "id": 53913,
+    "title": "Aerodynamicist",
+    "url": "https://astonmartinf1.pinpointhq.com/en/jobs/53913",
+    "department": { "id": "d1", "name": "Aerodynamics" },
+    "location": { "city": "Silverstone", "region": "England", "country": "United Kingdom" },
+    "description": "<p>Join our aero team working on next season's car.</p>",
+    "key_responsibilities": "<ul><li>Run CFD simulations</li><li>Windtunnel correlation</li></ul>"
+  },
+  {
+    "id": 53914,
+    "title": "Graduate Software Engineer",
+    "url": "https://astonmartinf1.pinpointhq.com/en/jobs/53914",
+    "department": { "id": "d2", "name": "IT & Technology" },
+    "location": { "city": "Silverstone", "region": "England", "country": "United Kingdom" },
+    "description": "<p>Our early careers programme for engineering graduates.</p>"
+  }
+]

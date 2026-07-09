@@ -5,21 +5,31 @@ technology partners — normalized from each team's own careers site, with
 saved searches and alerts (Phase 2). See `docs/` for the full project brief
 and source survey.
 
-## Status: Phase 0
+## Status: Phase 1 (in progress)
 
-One live source (Red Bull Racing, via Workday) flowing end-to-end:
-collector → normalize/dedupe/diff → Azure SQL → API → web feed. Coverage of
-the other 10 teams is Phase 1 — see the brief in the repo history for the
-full phased plan.
+Five sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
+SQL → API → web feed:
+
+- Red Bull Racing, Mercedes-AMG Petronas, Alpine — all Workday
+- Aston Martin Aramco — Pinpoint
+- Cadillac F1 — Workable
+
+The feed UI supports filtering (team, category, workplace type, employment
+type) and full-text search, and there's a Source Health view for collector
+status. Remaining Phase 1 work: the 6 teams whose ATS platform is still
+unconfirmed (Racing Bulls, Ferrari, McLaren, Williams, Haas, Audi) — see
+`docs/sources.md` for status per source.
 
 ## Structure
 
 ```
 apps/
-  web/         React (Vite) PWA — the feed UI
-  api/         Azure Functions HTTP API (GET /api/jobs)
+  web/         React (Vite) PWA — job feed (filters/search) + Source Health view
+  api/         Azure Functions HTTP API (GET /api/jobs, GET /api/sources)
   collectors/  Azure Functions timer triggers, one per source, behind a
-               shared Collector interface (apps/collectors/src/shared)
+               shared Collector interface (apps/collectors/src/shared).
+               ATS clients (Workday, Pinpoint, Workable) are shared across
+               the sources that use them.
 packages/
   schema/      Shared TypeScript types (Job, Source, CollectorRun, enums)
   db/          Azure SQL access layer shared by api and collectors

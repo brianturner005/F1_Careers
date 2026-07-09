@@ -1,0 +1,19 @@
+{
+  "total": 2,
+  "jobPostings": [
+    {
+      "title": "Power Unit Design Engineer",
+      "externalPath": "/job/Viry-Chatillon/Power-Unit-Design-Engineer_R-30011",
+      "locationsText": "Viry-Chatillon, France",
+      "postedOn": "Posted 2 Days Ago",
+      "bulletFields": ["R-30011"]
+    },
+    {
+      "title": "IT Support Technician",
+      "externalPath": "/job/Enstone/IT-Support-Technician_R-30012",
+      "locationsText": "Enstone, United Kingdom",
+      "postedOn": "Posted Yesterday",
+      "bulletFields": ["R-30012"]
+    }
+  ]
+}

@@ -38,4 +38,39 @@ describe('getJobs', () => {
 
     expect(response.status).toBe(500);
   });
+
+  it('passes through recognized filter query params', async () => {
+    listOpenJobsMock.mockResolvedValue({ jobs: [], total: 0 });
+
+    await getJobs(
+      makeRequest({
+        company: 'Red Bull Racing',
+        category: 'Software & IT',
+        locationCountry: 'GB',
+        workplaceType: 'onsite',
+        employmentType: 'permanent',
+        search: 'sre',
+      }),
+      context,
+    );
+
+    expect(listOpenJobsMock).toHaveBeenCalledWith({
+      limit: 20,
+      offset: 0,
+      company: 'Red Bull Racing',
+      category: 'Software & IT',
+      locationCountry: 'GB',
+      workplaceType: 'onsite',
+      employmentType: 'permanent',
+      search: 'sre',
+    });
+  });
+
+  it('omits filter keys that are absent or empty', async () => {
+    listOpenJobsMock.mockResolvedValue({ jobs: [], total: 0 });
+
+    await getJobs(makeRequest({ search: '' }), context);
+
+    expect(listOpenJobsMock).toHaveBeenCalledWith({ limit: 20, offset: 0 });
+  });
 });

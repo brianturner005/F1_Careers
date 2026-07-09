@@ -1,6 +1,6 @@
 # F1 Job Radar — Source Survey
 
-Last updated: 2026-07-09
+Last updated: 2026-07-09 (Phase 1: added Mercedes, Alpine, Aston Martin, Cadillac collectors)
 
 This document tracks, per source, the official careers URL, the underlying ATS
 platform, and whether a public JSON endpoint exists that a collector can use
@@ -27,6 +27,24 @@ collector, verify the exact request shape (headers, POST body, tenant/site
 IDs) against the live endpoint from a normal dev machine or from inside the
 deployed Azure Function (which will have unrestricted outbound access) —
 do not assume the payload below is byte-exact.**
+
+## Phase 1 status
+
+Collectors implemented so far (behind fixture-based unit tests; none
+verified against a live response — see the limitation note above):
+
+| Source id                       | Team                  | ATS      | Status                      |
+| ------------------------------- | --------------------- | -------- | --------------------------- |
+| `workday-red-bull-racing`       | Red Bull Racing       | Workday  | Implemented — Phase 0 pilot |
+| `workday-mercedes-amg-petronas` | Mercedes-AMG Petronas | Workday  | Implemented — Phase 1       |
+| `workday-alpine`                | Alpine                | Workday  | Implemented — Phase 1       |
+| `pinpoint-aston-martin`         | Aston Martin Aramco   | Pinpoint | Implemented — Phase 1       |
+| `workable-cadillac`             | Cadillac F1           | Workable | Implemented — Phase 1       |
+
+Not yet built — ATS still unconfirmed (see table below): Racing Bulls
+(VCARB), Ferrari, McLaren, Williams, Haas F1, Audi F1 (ex-Sauber). Each needs
+a manual "view source" / network-tab check from an unrestricted machine
+before a collector can be written for it.
 
 ## Summary table
 

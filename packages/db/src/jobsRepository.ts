@@ -79,6 +79,13 @@ export async function upsertJobs(jobs: Job[]): Promise<void> {
 export interface ListOpenJobsOptions {
   limit?: number;
   offset?: number;
+  company?: string;
+  category?: string;
+  locationCountry?: string;
+  workplaceType?: string;
+  employmentType?: string;
+  /** Case-insensitive substring match against title + description. */
+  search?: string;
 }
 
 export interface ListOpenJobsResult {
@@ -88,21 +95,56 @@ export interface ListOpenJobsResult {
 
 const DEFAULT_PAGE_SIZE = 20;
 
+// Escapes LIKE wildcards in user-supplied search text so `%`/`_` are matched
+// literally rather than acting as wildcards. The escaped value is still
+// bound via a parameterized input, never concatenated into the query text.
+function escapeLikePattern(value: string): string {
+  return value.replace(/[\\%_]/g, (match) => `\\${match}`);
+}
+
 export async function listOpenJobs(options: ListOpenJobsOptions = {}): Promise<ListOpenJobsResult> {
   const limit = options.limit ?? DEFAULT_PAGE_SIZE;
   const offset = options.offset ?? 0;
 
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('limit', sql.Int, limit)
-    .input('offset', sql.Int, offset).query<JobRow & { total_count: number }>(`
-      SELECT *, COUNT(*) OVER() AS total_count
-      FROM jobs
-      WHERE status = 'open'
-      ORDER BY COALESCE(posted_at, first_seen_at) DESC
-      OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
-    `);
+  const request = pool.request().input('limit', sql.Int, limit).input('offset', sql.Int, offset);
+
+  const conditions = ["status = 'open'"];
+
+  if (options.company) {
+    request.input('company', sql.NVarChar, options.company);
+    conditions.push('company = @company');
+  }
+  if (options.category) {
+    request.input('category', sql.NVarChar, options.category);
+    conditions.push('category = @category');
+  }
+  if (options.locationCountry) {
+    request.input('locationCountry', sql.NChar(2), options.locationCountry);
+    conditions.push('location_country = @locationCountry');
+  }
+  if (options.workplaceType) {
+    request.input('workplaceType', sql.NVarChar, options.workplaceType);
+    conditions.push('workplace_type = @workplaceType');
+  }
+  if (options.employmentType) {
+    request.input('employmentType', sql.NVarChar, options.employmentType);
+    conditions.push('employment_type = @employmentType');
+  }
+  if (options.search) {
+    request.input('search', sql.NVarChar, `%${escapeLikePattern(options.search)}%`);
+    conditions.push(
+      "(title LIKE @search ESCAPE '\\' OR description_excerpt LIKE @search ESCAPE '\\')",
+    );
+  }
+
+  const result = await request.query<JobRow & { total_count: number }>(`
+    SELECT *, COUNT(*) OVER() AS total_count
+    FROM jobs
+    WHERE ${conditions.join(' AND ')}
+    ORDER BY COALESCE(posted_at, first_seen_at) DESC
+    OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
+  `);
 
   return {
     jobs: result.recordset.map(rowToJob),

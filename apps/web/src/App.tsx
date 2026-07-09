@@ -1,49 +1,37 @@
 import { useEffect, useState } from 'react';
-import type { Job } from '@f1-job-radar/schema';
-import { fetchJobs } from './api.js';
+import type { Source } from '@f1-job-radar/schema';
+import { fetchSources } from './api.js';
+import { JobsFeed } from './JobsFeed.js';
+import { SourceHealth } from './SourceHealth.js';
 
-type LoadState = 'loading' | 'ready' | 'error';
+type View = 'feed' | 'health';
 
 export function App() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [state, setState] = useState<LoadState>('loading');
+  const [view, setView] = useState<View>('feed');
+  const [sources, setSources] = useState<Source[]>([]);
 
   useEffect(() => {
-    let cancelled = false;
-    fetchJobs()
-      .then((data) => {
-        if (cancelled) return;
-        setJobs(data.jobs);
-        setState('ready');
-      })
-      .catch(() => {
-        if (!cancelled) setState('error');
-      });
-    return () => {
-      cancelled = true;
-    };
+    fetchSources()
+      .then((data) => setSources(data.sources))
+      .catch(() => setSources([]));
   }, []);
+
+  const companies = [...new Set(sources.map((source) => source.company))].sort();
 
   return (
     <main>
-      <h1>F1 Job Radar</h1>
-      {state === 'loading' && <p>Loading jobs…</p>}
-      {state === 'error' && <p>Couldn&apos;t load jobs. Try again shortly.</p>}
-      {state === 'ready' && jobs.length === 0 && <p>No open roles right now.</p>}
-      {state === 'ready' && jobs.length > 0 && (
-        <ul>
-          {jobs.map((job) => (
-            <li key={job.id}>
-              <a href={job.applyUrl} target="_blank" rel="noreferrer">
-                <strong>{job.title}</strong>
-              </a>
-              {' — '}
-              {job.company}
-              {job.locationText ? ` · ${job.locationText}` : ''}
-            </li>
-          ))}
-        </ul>
-      )}
+      <header>
+        <h1>F1 Job Radar</h1>
+        <nav>
+          <button type="button" onClick={() => setView('feed')} aria-pressed={view === 'feed'}>
+            Jobs
+          </button>
+          <button type="button" onClick={() => setView('health')} aria-pressed={view === 'health'}>
+            Source Health
+          </button>
+        </nav>
+      </header>
+      {view === 'feed' ? <JobsFeed companies={companies} /> : <SourceHealth sources={sources} />}
     </main>
   );
 }
