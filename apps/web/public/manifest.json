@@ -1,0 +1,9 @@
+{
+  "name": "F1 Job Radar",
+  "short_name": "F1 Job Radar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "icons": []
+}

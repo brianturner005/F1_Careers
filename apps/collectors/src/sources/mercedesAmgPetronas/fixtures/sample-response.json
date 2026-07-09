@@ -1,0 +1,19 @@
+{
+  "total": 2,
+  "jobPostings": [
+    {
+      "title": "Cloud Platform Engineer",
+      "externalPath": "/job/Brackley/Cloud-Platform-Engineer_R-20031",
+      "locationsText": "Brackley, United Kingdom",
+      "postedOn": "Posted 5 Days Ago",
+      "bulletFields": ["R-20031"]
+    },
+    {
+      "title": "Early Careers - Vehicle Dynamics Graduate",
+      "externalPath": "/job/Brackley/Early-Careers-Vehicle-Dynamics-Graduate_R-20032",
+      "locationsText": "Brackley, United Kingdom",
+      "postedOn": "Posted Today",
+      "bulletFields": ["R-20032"]
+    }
+  ]
+}

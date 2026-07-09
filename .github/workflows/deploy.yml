@@ -1,0 +1,116 @@
+name: Deploy
+
+# Each Function App is esbuild-bundled into a single dist/bundle.js (see
+# apps/*/package.json "build"/"bundle" scripts), then repackaged by
+# scripts/prepare-function-deploy.mjs into a dependency-free deploy/ folder
+# (bundle.js + host.json + a package.json with no "dependencies" at all).
+# That sidesteps the original problem: @f1-job-radar/schema, @f1-job-radar/db,
+# and @f1-job-radar/email are npm workspace-local packages, resolved via
+# root-level node_modules symlinks and never published to a registry, so
+# Azure's remote (Oryx) build could never have resolved them from one app
+# directory in isolation. Bundling removes the need for Oryx to run at all —
+# the Function Apps' SCM_DO_BUILD_DURING_DEPLOYMENT setting is off (see
+# infra/modules/functionApp.bicep) as a second line of defense.
+# Verified locally: each bundle runs standalone from its deploy/ folder with
+# zero node_modules and all functions attempt registration correctly.
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: |
+          node scripts/prepare-function-deploy.mjs apps/api
+          node scripts/prepare-function-deploy.mjs apps/collectors
+          node scripts/prepare-function-deploy.mjs apps/alerts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-deploy
+          path: apps/api/deploy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collectors-deploy
+          path: apps/collectors/deploy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alerts-deploy
+          path: apps/alerts/deploy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+
+  deploy-api:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: api-deploy
+          path: apps/api/deploy
+      - uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_API_FUNCTIONAPP_NAME }}
+          package: apps/api/deploy
+          publish-profile: ${{ secrets.AZURE_API_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
+
+  deploy-collectors:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: collectors-deploy
+          path: apps/collectors/deploy
+      - uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_NAME }}
+          package: apps/collectors/deploy
+          publish-profile: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
+
+  deploy-alerts:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: alerts-deploy
+          path: apps/alerts/deploy
+      - uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_NAME }}
+          package: apps/alerts/deploy
+          publish-profile: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
+
+  deploy-web:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: apps/web/dist
+          skip_app_build: true

@@ -1,0 +1,32 @@
+{
+  "jobs": [
+    {
+      "id": "abc123",
+      "title": "Site Reliability Engineer",
+      "shortcode": "CADF1001",
+      "department": "Information Technology",
+      "url": "https://apply.workable.com/cadillacf1team/j/CADF1001/",
+      "location": {
+        "city": "Fishers",
+        "region": "Indiana",
+        "country": "United States",
+        "telecommuting": false
+      },
+      "created_at": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "def456",
+      "title": "Race Strategy Analyst",
+      "shortcode": "CADF1002",
+      "department": "Race Strategy & Performance",
+      "url": "https://apply.workable.com/cadillacf1team/j/CADF1002/",
+      "location": {
+        "city": "Silverstone",
+        "region": "England",
+        "country": "United Kingdom",
+        "telecommuting": false
+      },
+      "created_at": "2026-07-05T00:00:00.000Z"
+    }
+  ]
+}
