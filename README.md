@@ -2,8 +2,12 @@
 
 A single, searchable feed of every open job across Formula 1 teams and their
 technology partners — normalized from each team's own careers site, with
-accounts, saved searches, and email alerts. See `docs/` for the full project
-brief and source survey.
+accounts, saved searches, and email alerts.
+
+📄 **[Project overview / landing page →](https://brianturner005.github.io/F1_Careers/)**
+(once GitHub Pages is enabled — see `docs/index.html`)
+
+See `docs/` for the full project brief and source survey.
 
 ## Status: Phase 3 (in progress)
 

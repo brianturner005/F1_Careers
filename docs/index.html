@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F1 Job Radar</title>
+    <meta
+      name="description"
+      content="Every open Formula 1 team job, in one feed, with email alerts — a portfolio project by Brian Turner."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --bg-alt: #f4f5f7;
+        --text: #14151a;
+        --text-muted: #55596b;
+        --border: rgba(20, 21, 26, 0.12);
+        --accent: #2563eb;
+        --accent-soft: rgba(37, 99, 235, 0.1);
+        --card-bg: #ffffff;
+        --pill-bg: #fff4e5;
+        --pill-text: #8a5300;
+        --pill-border: #f0c98a;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d0f14;
+          --bg-alt: #14161d;
+          --text: #edeef2;
+          --text-muted: #9aa0b4;
+          --border: rgba(237, 238, 242, 0.12);
+          --accent: #5b8def;
+          --accent-soft: rgba(91, 141, 239, 0.16);
+          --card-bg: #171923;
+          --pill-bg: #2b230f;
+          --pill-text: #f0c98a;
+          --pill-border: #6b5424;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      header.site {
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(6px);
+        z-index: 10;
+      }
+
+      header.site .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 0.9rem;
+        padding-bottom: 0.9rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        font-weight: 700;
+        font-size: 1.05rem;
+        text-decoration: none;
+        color: var(--text);
+      }
+
+      nav.links {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.92rem;
+      }
+
+      nav.links a {
+        text-decoration: none;
+        color: var(--text-muted);
+      }
+
+      nav.links a:hover {
+        color: var(--accent);
+      }
+
+      main {
+        padding: 3.5rem 0 4rem;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 0.3rem 0.75rem;
+        border-radius: 999px;
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        border: 1px solid var(--pill-border);
+        margin-bottom: 1.25rem;
+      }
+
+      .status-pill::before {
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 5vw, 2.9rem);
+        line-height: 1.1;
+        margin: 0 0 0.75rem;
+        letter-spacing: -0.02em;
+      }
+
+      .tagline {
+        font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+        color: var(--text-muted);
+        max-width: 46rem;
+        margin: 0 0 1.75rem;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.65rem 1.15rem;
+        border-radius: 8px;
+        font-size: 0.92rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+      }
+
+      .btn.primary {
+        background: var(--accent);
+        color: white;
+        border-color: transparent;
+      }
+
+      .btn.secondary {
+        color: var(--text);
+      }
+
+      section {
+        margin-bottom: 3.25rem;
+      }
+
+      section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.01em;
+      }
+
+      section .lede {
+        color: var(--text-muted);
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        max-width: 42rem;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.25rem;
+      }
+
+      .card h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1.02rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.7rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .ats-badge {
+        display: inline-block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.88rem;
+        overflow-x: auto;
+        padding: 1.25rem;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+
+      .flow-step {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.55rem 0.85rem;
+        white-space: nowrap;
+        font-weight: 600;
+      }
+
+      .flow-arrow {
+        color: var(--text-muted);
+      }
+
+      .flow-branch {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--border);
+      }
+
+      .stack-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .stack-chip {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem 0 3rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      footer a {
+        color: var(--text-muted);
+        text-decoration: underline;
+      }
+
+      .quote {
+        border-left: 3px solid var(--accent);
+        padding-left: 1rem;
+        color: var(--text-muted);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <a class="brand" href="#top">🏎️ F1 Job Radar</a>
+        <nav class="links">
+          <a href="https://github.com/brianturner005/F1_Careers">GitHub</a>
+          <a href="https://github.com/brianturner005/F1_Careers#readme">README</a>
+          <a href="./sources.md">Source Survey</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <section id="top" style="margin-bottom: 0">
+          <span class="status-pill">In active development — not yet deployed live</span>
+          <h1>Every open Formula 1 job, in one feed.</h1>
+          <p class="tagline">
+            F1 teams and their technology partners run 10+ different careers portals on 10+
+            different platforms. F1 Job Radar collects, normalizes, and de-duplicates every posting
+            into a single searchable feed — with saved searches and email alerts, so you never miss
+            the one that matters.
+          </p>
+          <div class="cta-row">
+            <a class="btn primary" href="https://github.com/brianturner005/F1_Careers"
+              >View source on GitHub</a
+            >
+            <a class="btn secondary" href="https://github.com/brianturner005/F1_Careers#readme"
+              >Read the README</a
+            >
+            <a class="btn secondary" href="./sources.md">Source survey</a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Why this exists</h2>
+          <p class="lede">
+            I'm a senior SRE/cloud engineer and Navy veteran working to break into Formula 1 — and
+            tired of manually checking a dozen different careers portals for openings. This is both
+            a tool I use myself and a demonstration of the cloud architecture, data engineering, and
+            product instincts I'd bring to a technology role in the paddock.
+          </p>
+          <p class="quote">
+            The platform never takes applications directly — every listing links straight back to
+            the team's own official posting.
+          </p>
+        </section>
+
+        <section>
+          <h2>What's built</h2>
+          <p class="lede">
+            Seven sources flowing end-to-end today: collector → normalize/dedupe/diff → Azure SQL →
+            API → web feed. 102 unit tests across 7 workspaces, plus full account/search flows
+            verified in a real browser against a mock API.
+          </p>
+          <div class="card-grid">
+            <div class="card">
+              <h3>Unified, searchable feed</h3>
+              <p>
+                Filter by team, category, workplace type, and employment type, or full-text search
+                across title and description.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Source health monitoring</h3>
+              <p>
+                Every collector run is logged — postings found, new, closed, and errors — with a
+                public health indicator per source.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Accounts &amp; alerts</h3>
+              <p>
+                Passwordless (magic-link) sign-in. Save a search and get a daily or weekly email
+                digest the moment something new matches.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Hiring trends</h3>
+              <p>
+                Postings-opened per team over a configurable window, derived entirely from collector
+                history — no extra data collection required.
+              </p>
+            </div>
+            <div class="card">
+              <h3>"New this week"</h3>
+              <p>
+                A shareable, no-login digest page grouped by team — built for organic sharing in
+                motorsport communities.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Pluggable collectors</h3>
+              <p>
+                Every source implements one small interface. Adding a team is a config file, not a
+                core-code change.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Coverage</h2>
+          <p class="lede">
+            7 of 11 F1 teams plus one supplier are live. The rest are documented, not guessed at —
+            see the source survey for exactly what's confirmed vs. still needs verification.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>ATS platform</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Red Bull Racing</td>
+                <td><span class="ats-badge">Workday</span></td>
+              </tr>
+              <tr>
+                <td>Mercedes-AMG Petronas</td>
+                <td><span class="ats-badge">Workday</span></td>
+              </tr>
+              <tr>
+                <td>Alpine</td>
+                <td><span class="ats-badge">Workday</span></td>
+              </tr>
+              <tr>
+                <td>Formula One Management</td>
+                <td><span class="ats-badge">Workday</span></td>
+              </tr>
+              <tr>
+                <td>Aston Martin Aramco</td>
+                <td><span class="ats-badge">Pinpoint</span></td>
+              </tr>
+              <tr>
+                <td>Cadillac F1</td>
+                <td><span class="ats-badge">Workable</span></td>
+              </tr>
+              <tr>
+                <td>Pirelli</td>
+                <td><span class="ats-badge">Trakstar (RSS)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Architecture</h2>
+          <p class="lede">
+            Azure end-to-end: consumption-plan Functions, serverless SQL, a static web app —
+            designed to run for low tens of dollars a month or less.
+          </p>
+          <div class="flow">
+            <div class="flow-step">Collectors (timer)</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Normalize / dedupe / diff</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Azure SQL</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">API (HTTP)</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Web (React PWA)</div>
+            <div class="flow-branch">
+              <div class="flow-step">Alerts worker (timer)</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Email (Resend)</div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Tech stack</h2>
+          <div class="stack-row">
+            <span class="stack-chip">TypeScript end-to-end</span>
+            <span class="stack-chip">React + Vite</span>
+            <span class="stack-chip">Azure Functions (Node)</span>
+            <span class="stack-chip">Azure SQL (serverless)</span>
+            <span class="stack-chip">Azure Static Web Apps</span>
+            <span class="stack-chip">Bicep (IaC)</span>
+            <span class="stack-chip">GitHub Actions CI/CD</span>
+            <span class="stack-chip">esbuild</span>
+            <span class="stack-chip">Vitest</span>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          Built by Brian Turner —
+          <a href="https://github.com/brianturner005/F1_Careers">source on GitHub</a>. This page
+          describes an in-progress personal project; nothing here is a live production service yet.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
