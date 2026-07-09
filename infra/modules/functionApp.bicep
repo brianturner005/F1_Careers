@@ -49,6 +49,12 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' }
           { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsightsConnectionString }
           { name: 'SQL_CONNECTION_STRING', value: sqlConnectionString }
+          // Deploys ship a pre-bundled dist/bundle.js with no dependencies
+          // to install (see scripts/prepare-function-deploy.mjs) — Oryx has
+          // nothing to build here, and running it anyway would try (and
+          // fail) to resolve the app's own package.json if that ever
+          // regressed to listing the workspace-local @f1-job-radar/* deps.
+          { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'false' }
         ],
         extraAppSettings
       )

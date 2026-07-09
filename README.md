@@ -7,12 +7,13 @@ brief and source survey.
 
 ## Status: Phase 3 (in progress)
 
-Six sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
+Seven sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
 SQL → API → web feed:
 
 - Red Bull Racing, Mercedes-AMG Petronas, Alpine, Formula One Management — all Workday
 - Aston Martin Aramco — Pinpoint
 - Cadillac F1 — Workable
+- Pirelli — Trakstar (RSS/XML feed; Trakstar has no public JSON API)
 
 The feed UI supports filtering (team, category, workplace type, employment
 type) and full-text search, plus a Source Health view for collector status.
@@ -29,11 +30,10 @@ history — no new data collection needed) and a "New This Week" shareable
 page grouped by team.
 
 Remaining Phase 1 work: the 6 teams whose ATS platform is still unconfirmed
-(Racing Bulls, Ferrari, McLaren, Williams, Haas, Audi), plus several
-supplier/adjacent-series sources researched but not yet built (Pirelli is
-confirmed on Trakstar — a new ATS we don't support yet; McLaren Applied,
-Cosworth, Bosch Motorsport, and Formula E remain unconfirmed) — see
-`docs/sources.md` for status per source.
+(Racing Bulls, Ferrari, McLaren, Williams, Haas, Audi), plus a few
+supplier/adjacent-series sources still unconfirmed (McLaren Applied,
+Cosworth, Bosch Motorsport, Formula E) — see `docs/sources.md` for status
+per source.
 
 ## Structure
 
@@ -45,8 +45,8 @@ apps/
                saved searches
   collectors/  Azure Functions timer triggers, one per source, behind a
                shared Collector interface (apps/collectors/src/shared).
-               ATS clients (Workday, Pinpoint, Workable) are shared across
-               the sources that use them.
+               ATS clients (Workday, Pinpoint, Workable, Trakstar) are
+               shared across the sources that use them.
   alerts/      Azure Functions timer triggers: daily/weekly digest worker
 packages/
   schema/      Shared TypeScript types (Job, Source, User, SavedSearch, enums)
@@ -79,9 +79,17 @@ doesn't belong pinned per-workspace) and a `local.settings.json` (copy
 ```sh
 # apps/api, apps/collectors, or apps/alerts
 cp local.settings.json.example local.settings.json
-npm run watch     # tsc -b -w in one terminal
-npm start         # func start in another
+npm run build     # regenerates dist/bundle.js, which "main" points at
+npm start         # func start
 ```
+
+Each Function App's `package.json` `"main"` points at `dist/bundle.js` — a
+single esbuild-bundled file with every `@f1-job-radar/*` package and
+third-party dependency inlined (see `apps/*/package.json`'s `bundle`
+script). `func start` runs that same bundle, so local dev and what
+actually deploys are identical. `tsc -b -w` alone won't regenerate the
+bundle on save — rerun `npm run build` (or `npm run bundle`) after changes
+before restarting `func start`.
 
 For the web app:
 
@@ -94,6 +102,9 @@ npm run dev
 ## Deployment
 
 See `infra/README.md` for the Bicep deploy steps and `.github/workflows/`
-for CI (build/lint/test on every PR) and the deploy workflow (currently
-flagged with a known monorepo-packaging caveat — see the comment at the top
-of `deploy.yml` before relying on it).
+for CI (build/lint/test on every PR) and the deploy workflow. Each Function
+App is esbuild-bundled to a single dependency-free artifact before
+deploying (see the comment at the top of `deploy.yml` and
+`scripts/prepare-function-deploy.mjs`) — verified locally to run standalone
+with zero `node_modules`, though the actual Azure deploy step itself still
+needs real credentials to try end-to-end.

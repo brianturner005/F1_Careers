@@ -32,8 +32,18 @@ export default [
       'no-undef': 'off',
     },
   },
+  {
+    files: ['**/*.mjs', '**/*.cjs'],
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   eslintConfigPrettier,
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/build/**'],
+    ignores: ['**/dist/**', '**/deploy/**', '**/node_modules/**', '**/build/**'],
   },
 ];

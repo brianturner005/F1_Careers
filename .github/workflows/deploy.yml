@@ -1,18 +1,18 @@
 name: Deploy
 
-# NOTE: this deploys apps/api, apps/collectors, and apps/alerts as-is from
-# their own directories. Because @f1-job-radar/schema, @f1-job-radar/db, and
-# @f1-job-radar/email are npm workspace-local packages (resolved via
-# root-level node_modules symlinks, not published to any registry), Azure's
-# remote (Oryx) build cannot resolve them if it only sees one app directory in
-# isolation. Before this workflow can deploy successfully, pick one:
-#   (a) bundle each Function App with esbuild into a single dist file that
-#       inlines the workspace packages, or
-#   (b) publish the @f1-job-radar/* packages to a registry (e.g. GitHub
-#       Packages) and depend on a real version range instead of the `*`
-#       workspace protocol.
-# Tracked as a Phase 0 -> Phase 1 follow-up; left unresolved here since it
-# can't be verified without real Azure credentials.
+# Each Function App is esbuild-bundled into a single dist/bundle.js (see
+# apps/*/package.json "build"/"bundle" scripts), then repackaged by
+# scripts/prepare-function-deploy.mjs into a dependency-free deploy/ folder
+# (bundle.js + host.json + a package.json with no "dependencies" at all).
+# That sidesteps the original problem: @f1-job-radar/schema, @f1-job-radar/db,
+# and @f1-job-radar/email are npm workspace-local packages, resolved via
+# root-level node_modules symlinks and never published to a registry, so
+# Azure's remote (Oryx) build could never have resolved them from one app
+# directory in isolation. Bundling removes the need for Oryx to run at all —
+# the Function Apps' SCM_DO_BUILD_DURING_DEPLOYMENT setting is off (see
+# infra/modules/functionApp.bicep) as a second line of defense.
+# Verified locally: each bundle runs standalone from its deploy/ folder with
+# zero node_modules and all functions attempt registration correctly.
 
 on:
   push:
@@ -33,18 +33,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: |
+          node scripts/prepare-function-deploy.mjs apps/api
+          node scripts/prepare-function-deploy.mjs apps/collectors
+          node scripts/prepare-function-deploy.mjs apps/alerts
       - uses: actions/upload-artifact@v4
         with:
-          name: api-dist
-          path: apps/api
+          name: api-deploy
+          path: apps/api/deploy
       - uses: actions/upload-artifact@v4
         with:
-          name: collectors-dist
-          path: apps/collectors
+          name: collectors-deploy
+          path: apps/collectors/deploy
       - uses: actions/upload-artifact@v4
         with:
-          name: alerts-dist
-          path: apps/alerts
+          name: alerts-deploy
+          path: apps/alerts/deploy
       - uses: actions/upload-artifact@v4
         with:
           name: web-dist
@@ -56,13 +60,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: api-dist
-          path: apps/api
+          name: api-deploy
+          path: apps/api/deploy
       - uses: Azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_API_FUNCTIONAPP_NAME }}
-          package: apps/api
+          package: apps/api/deploy
           publish-profile: ${{ secrets.AZURE_API_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
 
   deploy-collectors:
     needs: build
@@ -70,13 +75,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: collectors-dist
-          path: apps/collectors
+          name: collectors-deploy
+          path: apps/collectors/deploy
       - uses: Azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_NAME }}
-          package: apps/collectors
+          package: apps/collectors/deploy
           publish-profile: ${{ secrets.AZURE_COLLECTORS_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
 
   deploy-alerts:
     needs: build
@@ -84,13 +90,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: alerts-dist
-          path: apps/alerts
+          name: alerts-deploy
+          path: apps/alerts/deploy
       - uses: Azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_NAME }}
-          package: apps/alerts
+          package: apps/alerts/deploy
           publish-profile: ${{ secrets.AZURE_ALERTS_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
 
   deploy-web:
     needs: build
