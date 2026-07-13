@@ -1,6 +1,6 @@
 # Paddock Jobs — Source Survey
 
-Last updated: 2026-07-09 (Phase 3: added Formula 1 Management and Pirelli; deploy pipeline now bundles for real)
+Last updated: 2026-07-13 (Phase 4 kickoff: initial WEC/IMSA endurance-racing source research — see new section below)
 
 This document tracks, per source, the official careers URL, the underlying ATS
 platform, and whether a public JSON endpoint exists that a collector can use
@@ -136,6 +136,47 @@ unrestricted machine before a collector is designed for them. None showed
 any robots.txt or ToS red flag in search results, but robots.txt itself
 could not be fetched from this sandbox either — **must be checked
 per-source before the first live collector run**, per brief §11.7.
+
+## Phase 4: WEC / IMSA endurance racing research (initial pass)
+
+Following the F1-only → all-motorsport expansion decision, WEC Hypercar and
+IMSA GTP were picked as the first non-F1 series (natural overlap with
+existing F1 suppliers/teams). This is a **web-search-only research pass**,
+not a live network-tab check — same sandbox egress limitation as every F1
+source above applies here too (this environment can't reach team/ATS domains
+directly; confirmed by testing `careers.tgr-europe.com` through both `curl`
+and a headless browser, both blocked the same way `*.myworkdayjobs.com` etc.
+were blocked in Phase 0). Everything below needs the same manual DevTools
+verification as the still-unconfirmed F1 teams before a collector is worth
+writing.
+
+| Team / program                     | Careers URL                                                          | ATS                                        | Confidence | Notes                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| Cadillac Racing (WEC + IMSA GTP)     | careers.cadillacf1team.com, opportunities.cadillacf1team.com          | **Workable** (same board as Cadillac F1)   | Medium     | GM runs the WEC/IMSA program under the same "Cadillac" umbrella as the F1 team — likely the *same* careers site, meaning **the existing `workable-cadillac` collector may already cover it** once confirmed live. Highest-value finding this pass. |
+| Ferrari AF Corse (WEC Hypercar 499P) | jobs.ferrari.com (same as Scuderia Ferrari F1)                        | Unknown (same Taleo guess as F1 Ferrari)   | Low        | AF Corse is Ferrari's endurance partner team; likely shares Ferrari's corporate ATS.  |
+| Toyota Racing (formerly Toyota Gazoo Racing) | careers.tgr-europe.com                                        | Unknown                                    | Low        | Team rebranded from "Toyota Gazoo Racing" to "Toyota Racing" for the 2026 season — dedicated careers portal exists, platform unconfirmed. |
+| Porsche Penske Motorsport             | teampenske.com/about/index.cfm/51985/Careers                         | Unknown — URL pattern (`.cfm`) suggests an older/custom site, not a modern SaaS ATS | Low | Shared with Team Penske's NASCAR/IndyCar operations, not WEC/IMSA-specific. |
+| Aston Martin (Valkyrie WEC program)  | astonmartinf1.com/careers (existing Pinpoint site) or astonmartin.com/en/corporate/careers | Unconfirmed which one covers the WEC "THOR Team" | Low | Ambiguous whether WEC hiring flows through the F1 team's Pinpoint board or general corporate careers. |
+| BMW M Motorsport                     | bmwgroup.jobs, jobs.bmwgroup.com                                     | Unknown                                    | Low        | No dedicated motorsport-specific careers portal found — appears to fold into BMW Group's general corporate ATS. |
+| Peugeot TotalEnergies                | totalenergies.com/careers, jobs.totalenergies.com                    | Unknown                                    | Low        | No dedicated motorsport portal found; folds into TotalEnergies/Stellantis general careers, low relevance as a distinct source. |
+
+### Deprioritized — programs winding down
+
+Two GTP manufacturer programs were confirmed (via search) to be discontinuing,
+so building collectors for them isn't worth the effort right now:
+
+- **Acura / Honda Racing Corporation US (ARX-06 GTP)** — HRC US confirmed the
+  program will pause after the 2026 IMSA season (per RACER, April 2026).
+- **Lamborghini Squadra Corse (SC63)** — WEC entry ceased after 2024; IMSA
+  entry confirmed not continuing into 2026.
+
+### Next step
+
+None of the above is live-verified. The next concrete step is the same as
+the remaining unconfirmed F1 teams: a manual DevTools Network-tab check per
+source from an unrestricted machine, starting with Cadillac Racing (highest
+confidence it's a free win via the existing Workable collector) and Ferrari
+AF Corse (shares infra with an already partially-investigated F1 source).
 
 ## Collector etiquette reminder (applies to all sources)
 

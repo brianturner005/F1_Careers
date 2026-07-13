@@ -241,6 +241,30 @@ form[aria-label='Sign in'] p {
   margin: 0 0 0.75rem;
 }
 
+.load-more {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  background: transparent;
+  color: var(--accent);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.load-more:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.load-more:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .state-message {
   color: var(--text-muted);
 }
