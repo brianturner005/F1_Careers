@@ -1,8 +1,9 @@
-# F1 Job Radar
+# Paddock Jobs
 
-A single, searchable feed of every open job across Formula 1 teams and their
+A single, searchable feed of every open job across motorsport teams and their
 technology partners — normalized from each team's own careers site, with
-accounts, saved searches, and email alerts.
+accounts, saved searches, and email alerts. Currently covers Formula 1;
+WEC/IMSA endurance racing is next (see `docs/sources.md`).
 
 📄 **[Project overview / landing page →](https://brianturner005.github.io/F1_Careers/)**
 (once GitHub Pages is enabled — see `docs/index.html`)
