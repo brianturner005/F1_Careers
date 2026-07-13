@@ -51,7 +51,7 @@ export function NewThisWeek() {
       {state === 'ready' && total > 0 && (
         <>
           <p className="results-count">
-            {total} new role{total === 1 ? '' : 's'} across F1 this week.
+            {total} new role{total === 1 ? '' : 's'} this week.
           </p>
           {[...groups.entries()].map(([company, companyJobs]) => (
             <div key={company} className="company-group">
