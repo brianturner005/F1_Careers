@@ -25,18 +25,24 @@ export function SavedSearches() {
     load();
   }
 
-  if (state === 'loading') return <p>Loading saved searches…</p>;
-  if (state === 'error') return <p>Couldn&apos;t load saved searches.</p>;
+  if (state === 'loading') return <p className="state-message">Loading saved searches…</p>;
+  if (state === 'error') return <p className="state-message">Couldn&apos;t load saved searches.</p>;
   if (savedSearches.length === 0) {
-    return <p>No saved searches yet — set filters on the Jobs tab and save them.</p>;
+    return (
+      <p className="state-message">
+        No saved searches yet — set filters on the Jobs tab and save them.
+      </p>
+    );
   }
 
   return (
-    <ul>
+    <ul className="saved-list">
       {savedSearches.map((search) => (
-        <li key={search.id}>
-          <strong>{search.name}</strong> — {search.frequency} digest
-          <button type="button" onClick={() => handleDelete(search.id)}>
+        <li key={search.id} className="saved-item">
+          <span>
+            <strong>{search.name}</strong> — {search.frequency} digest
+          </span>
+          <button type="button" className="danger" onClick={() => handleDelete(search.id)}>
             Delete
           </button>
         </li>

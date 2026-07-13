@@ -41,26 +41,28 @@ export function NewThisWeek() {
   return (
     <section>
       <h2>New This Week</h2>
-      {state === 'loading' && <p>Loading…</p>}
-      {state === 'error' && <p>Couldn&apos;t load this week&apos;s new postings.</p>}
+      {state === 'loading' && <p className="state-message">Loading…</p>}
+      {state === 'error' && (
+        <p className="state-message">Couldn&apos;t load this week&apos;s new postings.</p>
+      )}
       {state === 'ready' && total === 0 && (
-        <p>No new postings in the last 7 days — check back soon.</p>
+        <p className="state-message">No new postings in the last 7 days — check back soon.</p>
       )}
       {state === 'ready' && total > 0 && (
         <>
-          <p>
+          <p className="results-count">
             {total} new role{total === 1 ? '' : 's'} across F1 this week.
           </p>
           {[...groups.entries()].map(([company, companyJobs]) => (
-            <div key={company}>
+            <div key={company} className="company-group">
               <h3>{company}</h3>
-              <ul>
+              <ul className="job-list">
                 {companyJobs.map((job) => (
-                  <li key={job.id}>
-                    <a href={job.applyUrl} target="_blank" rel="noreferrer">
-                      <strong>{job.title}</strong>
+                  <li key={job.id} className="job-card">
+                    <a href={job.applyUrl} target="_blank" rel="noreferrer" className="job-title">
+                      {job.title}
                     </a>
-                    {job.locationText ? ` · ${job.locationText}` : ''}
+                    {job.locationText ? <span className="job-meta">{job.locationText}</span> : null}
                   </li>
                 ))}
               </ul>
