@@ -6,6 +6,8 @@ import { fetchJobs, type JobFilters } from './api.js';
 
 type LoadState = 'loading' | 'ready' | 'error';
 
+const PAGE_SIZE = 20;
+
 interface JobsFeedProps {
   companies: string[];
   filters: JobFilters;
@@ -17,11 +19,12 @@ export function JobsFeed({ companies, filters, onFiltersChange, saveSearchSlot }
   const [jobs, setJobs] = useState<Job[]>([]);
   const [total, setTotal] = useState(0);
   const [state, setState] = useState<LoadState>('loading');
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setState('loading');
-    fetchJobs(filters)
+    fetchJobs(filters, PAGE_SIZE, 0)
       .then((data) => {
         if (cancelled) return;
         setJobs(data.jobs);
@@ -35,6 +38,18 @@ export function JobsFeed({ companies, filters, onFiltersChange, saveSearchSlot }
       cancelled = true;
     };
   }, [filters]);
+
+  async function loadMore(): Promise<void> {
+    setLoadingMore(true);
+    try {
+      const data = await fetchJobs(filters, PAGE_SIZE, jobs.length);
+      setJobs((prev) => [...prev, ...data.jobs]);
+    } catch {
+      setState('error');
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   function updateFilter(key: keyof JobFilters, value: string): void {
     onFiltersChange({ ...filters, [key]: value || undefined });
@@ -127,6 +142,11 @@ export function JobsFeed({ companies, filters, onFiltersChange, saveSearchSlot }
               </li>
             ))}
           </ul>
+          {jobs.length < total && (
+            <button type="button" className="load-more" onClick={loadMore} disabled={loadingMore}>
+              {loadingMore ? 'Loading…' : `Load more (${total - jobs.length} remaining)`}
+            </button>
+          )}
         </>
       )}
     </section>
