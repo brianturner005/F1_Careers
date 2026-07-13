@@ -23,7 +23,7 @@ export function VerifyPage() {
   }, []);
 
   return (
-    <main>
+    <main className="verify-page">
       <h1>Paddock Jobs</h1>
       {status === 'verifying' && <p>Signing you in…</p>}
       {status === 'success' && <p>Signed in! Redirecting…</p>}

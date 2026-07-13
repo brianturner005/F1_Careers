@@ -20,23 +20,29 @@ export function SignIn() {
   }
 
   if (status === 'sent') {
-    return <p>Check {email} for a sign-in link. It expires in 15 minutes.</p>;
+    return (
+      <div className="card">
+        <p>Check {email} for a sign-in link. It expires in 15 minutes.</p>
+      </div>
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Sign in">
-      <p>Sign in to save searches and get email alerts for new postings.</p>
-      <input
-        type="email"
-        required
-        placeholder="you@example.com"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-      />
-      <button type="submit" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending…' : 'Send sign-in link'}
-      </button>
-      {status === 'error' && <p role="alert">Something went wrong. Try again.</p>}
-    </form>
+    <div className="card">
+      <form onSubmit={handleSubmit} aria-label="Sign in">
+        <p>Sign in to save searches and get email alerts for new postings.</p>
+        <input
+          type="email"
+          required
+          placeholder="you@example.com"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <button type="submit" disabled={status === 'sending'}>
+          {status === 'sending' ? 'Sending…' : 'Send sign-in link'}
+        </button>
+        {status === 'error' && <p role="alert">Something went wrong. Try again.</p>}
+      </form>
+    </div>
   );
 }

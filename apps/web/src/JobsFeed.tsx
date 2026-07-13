@@ -101,25 +101,29 @@ export function JobsFeed({ companies, filters, onFiltersChange, saveSearchSlot }
 
       {saveSearchSlot}
 
-      {state === 'loading' && <p>Loading jobs…</p>}
-      {state === 'error' && <p>Couldn&apos;t load jobs. Try again shortly.</p>}
-      {state === 'ready' && jobs.length === 0 && <p>No open roles match these filters.</p>}
+      {state === 'loading' && <p className="state-message">Loading jobs…</p>}
+      {state === 'error' && (
+        <p className="state-message">Couldn&apos;t load jobs. Try again shortly.</p>
+      )}
+      {state === 'ready' && jobs.length === 0 && (
+        <p className="state-message">No open roles match these filters.</p>
+      )}
       {state === 'ready' && jobs.length > 0 && (
         <>
-          <p>
+          <p className="results-count">
             {total} open role{total === 1 ? '' : 's'}
           </p>
-          <ul>
+          <ul className="job-list">
             {jobs.map((job) => (
-              <li key={job.id}>
-                <a href={job.applyUrl} target="_blank" rel="noreferrer">
-                  <strong>{job.title}</strong>
+              <li key={job.id} className="job-card">
+                <a href={job.applyUrl} target="_blank" rel="noreferrer" className="job-title">
+                  {job.title}
                 </a>
-                {' — '}
-                {job.company}
-                {job.locationText ? ` · ${job.locationText}` : ''}
-                {' · '}
-                <span>{job.category}</span>
+                <span className="job-meta">
+                  {job.company}
+                  {job.locationText ? ` · ${job.locationText}` : ''}
+                </span>
+                <span className="job-category">{job.category}</span>
               </li>
             ))}
           </ul>

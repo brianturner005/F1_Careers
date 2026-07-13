@@ -30,11 +30,11 @@ export function SaveSearchForm({ filters }: SaveSearchFormProps) {
   }
 
   if (!hasFilters) {
-    return <p>Set at least one filter above to save it as an alert.</p>;
+    return <p className="state-message">Set at least one filter above to save it as an alert.</p>;
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Save this search">
+    <form onSubmit={handleSubmit} aria-label="Save this search" className="card">
       <input
         type="text"
         placeholder="Name this search (e.g. SRE roles)"
@@ -56,8 +56,8 @@ export function SaveSearchForm({ filters }: SaveSearchFormProps) {
       <button type="submit" disabled={status === 'saving'}>
         Save &amp; get alerts
       </button>
-      {status === 'saved' && <span> Saved!</span>}
-      {status === 'error' && <span role="alert"> Couldn&apos;t save. Try again.</span>}
+      {status === 'saved' && <span>Saved!</span>}
+      {status === 'error' && <span role="alert">Couldn&apos;t save. Try again.</span>}
     </form>
   );
 }

@@ -57,9 +57,11 @@ export function HiringTrends() {
         </select>
       </label>
 
-      {state === 'loading' && <p>Loading…</p>}
-      {state === 'error' && <p>Couldn&apos;t load hiring trends.</p>}
-      {state === 'ready' && totals.length === 0 && <p>No postings recorded in this window yet.</p>}
+      {state === 'loading' && <p className="state-message">Loading…</p>}
+      {state === 'error' && <p className="state-message">Couldn&apos;t load hiring trends.</p>}
+      {state === 'ready' && totals.length === 0 && (
+        <p className="state-message">No postings recorded in this window yet.</p>
+      )}
       {state === 'ready' && totals.length > 0 && (
         <ul className="hiring-trends">
           {totals.map(({ company, total }) => (
