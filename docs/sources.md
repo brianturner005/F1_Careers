@@ -1,4 +1,4 @@
-# F1 Job Radar — Source Survey
+# Paddock Jobs — Source Survey
 
 Last updated: 2026-07-09 (Phase 3: added Formula 1 Management and Pirelli; deploy pipeline now bundles for real)
 

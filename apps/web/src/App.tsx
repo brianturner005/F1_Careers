@@ -57,7 +57,7 @@ export function App() {
   return (
     <main>
       <header>
-        <h1>F1 Job Radar</h1>
+        <h1>Paddock Jobs</h1>
         <nav>
           <button type="button" onClick={() => setView('feed')} aria-pressed={view === 'feed'}>
             Jobs

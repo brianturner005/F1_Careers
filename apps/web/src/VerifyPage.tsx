@@ -24,7 +24,7 @@ export function VerifyPage() {
 
   return (
     <main>
-      <h1>F1 Job Radar</h1>
+      <h1>Paddock Jobs</h1>
       {status === 'verifying' && <p>Signing you in…</p>}
       {status === 'success' && <p>Signed in! Redirecting…</p>}
       {status === 'error' && (

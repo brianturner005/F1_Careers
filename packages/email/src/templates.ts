@@ -7,7 +7,7 @@ export interface RenderedEmail {
 
 export function magicLinkEmail(verifyUrl: string): RenderedEmail {
   return {
-    subject: 'Your F1 Job Radar sign-in link',
+    subject: 'Your Paddock Jobs sign-in link',
     text: `Click to sign in (expires in 15 minutes):\n\n${verifyUrl}\n\nIf you didn't request this, you can ignore this email.`,
   };
 }

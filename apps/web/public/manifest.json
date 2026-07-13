@@ -1,6 +1,6 @@
 {
-  "name": "F1 Job Radar",
-  "short_name": "F1 Job Radar",
+  "name": "Paddock Jobs",
+  "short_name": "Paddock Jobs",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d0d0d",
