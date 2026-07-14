@@ -1,4 +1,9 @@
-import { getOpenJobsBySource, recordCollectorRun, upsertJobs } from '@f1-job-radar/db';
+import {
+  getOpenJobsBySource,
+  recordCollectorRun,
+  upsertJobs,
+  withDbConnection,
+} from '@f1-job-radar/db';
 import type { Collector } from './collector.js';
 import { dedupeById } from './dedupe.js';
 import { diffPostings } from './diff.js';
@@ -13,6 +18,10 @@ export interface RunLogger {
 // collector function calls. One place to get diffing/logging/error-recording
 // right so each source's Azure Function body stays a one-liner.
 export async function runCollector(collector: Collector, logger: RunLogger): Promise<void> {
+  return withDbConnection(() => runCollectorInternal(collector, logger));
+}
+
+async function runCollectorInternal(collector: Collector, logger: RunLogger): Promise<void> {
   const startedAt = new Date().toISOString();
 
   try {

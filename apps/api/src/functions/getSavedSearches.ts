@@ -6,6 +6,7 @@ import {
 } from '@azure/functions';
 import { listSavedSearchesForUser } from '@f1-job-radar/db';
 import { requireSession } from '../shared/requireSession.js';
+import { withDb } from '../shared/withDb.js';
 
 export async function getSavedSearches(
   request: HttpRequest,
@@ -27,5 +28,5 @@ app.http('getSavedSearches', {
   route: 'saved-searches',
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: getSavedSearches,
+  handler: withDb(getSavedSearches),
 });

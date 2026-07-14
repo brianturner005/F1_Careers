@@ -5,6 +5,7 @@ import {
   type InvocationContext,
 } from '@azure/functions';
 import { getHiringTrends } from '@f1-job-radar/db';
+import { withDb } from '../shared/withDb.js';
 
 const DEFAULT_WEEKS = 12;
 const MAX_WEEKS = 52;
@@ -30,5 +31,5 @@ app.http('getHiringTrends', {
   route: 'analytics/hiring-trends',
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: getHiringTrendsHandler,
+  handler: withDb(getHiringTrendsHandler),
 });
