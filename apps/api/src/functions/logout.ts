@@ -5,6 +5,7 @@ import {
   type InvocationContext,
 } from '@azure/functions';
 import { deleteSession } from '@f1-job-radar/db';
+import { withDb } from '../shared/withDb.js';
 
 const BEARER_PREFIX = 'Bearer ';
 
@@ -33,5 +34,5 @@ app.http('logout', {
   route: 'auth/logout',
   methods: ['POST'],
   authLevel: 'anonymous',
-  handler: logout,
+  handler: withDb(logout),
 });

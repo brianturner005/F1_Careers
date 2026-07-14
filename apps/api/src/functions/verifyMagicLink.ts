@@ -6,6 +6,7 @@ import {
 } from '@azure/functions';
 import { consumeMagicLinkToken, createSession, getUserById } from '@f1-job-radar/db';
 import { readJsonBody } from '../shared/readJsonBody.js';
+import { withDb } from '../shared/withDb.js';
 
 function extractToken(body: unknown): string | null {
   if (typeof body !== 'object' || body === null || !('token' in body)) return null;
@@ -45,5 +46,5 @@ app.http('verifyMagicLink', {
   route: 'auth/verify',
   methods: ['POST'],
   authLevel: 'anonymous',
-  handler: verifyMagicLink,
+  handler: withDb(verifyMagicLink),
 });

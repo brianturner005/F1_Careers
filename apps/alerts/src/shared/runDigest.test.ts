@@ -25,6 +25,7 @@ vi.mock('@f1-job-radar/db', () => ({
   markSavedSearchAlerted: markSavedSearchAlertedMock,
   recordAlert: recordAlertMock,
   getUserById: getUserByIdMock,
+  withDbConnection: (fn: () => Promise<unknown>) => fn(),
 }));
 
 vi.mock('@f1-job-radar/email', () => ({

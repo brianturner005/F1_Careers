@@ -7,6 +7,7 @@ import {
 import { createMagicLinkToken, findOrCreateUserByEmail } from '@f1-job-radar/db';
 import { createEmailSender, magicLinkEmail } from '@f1-job-radar/email';
 import { readJsonBody } from '../shared/readJsonBody.js';
+import { withDb } from '../shared/withDb.js';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEFAULT_WEB_BASE_URL = 'http://localhost:5173';
@@ -49,5 +50,5 @@ app.http('requestMagicLink', {
   route: 'auth/request-link',
   methods: ['POST'],
   authLevel: 'anonymous',
-  handler: requestMagicLink,
+  handler: withDb(requestMagicLink),
 });
