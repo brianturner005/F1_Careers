@@ -2,7 +2,8 @@ import { app, type InvocationContext, type Timer } from '@azure/functions';
 import { formula1ManagementCollector } from '../sources/formula1Management/collector.js';
 import { runCollector } from '../shared/runCollector.js';
 
-const SCHEDULE = '0 25 */6 * * *';
+// Once daily, offset 25 minutes from the other timers so they don't all fire at once.
+const SCHEDULE = '0 25 6 * * *';
 
 export async function formula1ManagementTimer(
   _timer: Timer,
