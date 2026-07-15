@@ -34,6 +34,11 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   properties: {
     autoPauseDelay: 60
     minCapacity: json('0.5')
+    // Azure SQL General Purpose bills for *provisioned* max size, not actual
+    // usage. The default (never set explicitly before) was 50GB against an
+    // actual ~8MB of data -- 1GB is Azure's minimum for this tier and still
+    // leaves ~100x headroom.
+    maxSizeBytes: 1073741824
   }
 }
 
