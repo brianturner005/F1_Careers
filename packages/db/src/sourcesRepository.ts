@@ -1,31 +1,22 @@
-import type { Source, SourceStatus } from '@f1-job-radar/schema';
-import { getPool } from './pool.js';
+import type { Source } from '@f1-job-radar/schema';
+import { getContainer } from './cosmosClient.js';
 
-interface SourceRow {
-  id: string;
-  display_name: string;
-  company: string;
-  ats_platform: string;
-  status: string;
-  last_run_at: Date | null;
-}
-
-function rowToSource(row: SourceRow): Source {
+function toSource(doc: Source): Source {
   return {
-    id: row.id,
-    displayName: row.display_name,
-    company: row.company,
-    atsPlatform: row.ats_platform,
-    status: row.status as SourceStatus,
-    lastRunAt: row.last_run_at ? row.last_run_at.toISOString() : null,
+    id: doc.id,
+    displayName: doc.displayName,
+    company: doc.company,
+    atsPlatform: doc.atsPlatform,
+    status: doc.status,
+    lastRunAt: doc.lastRunAt,
   };
 }
 
 // Backs the collector-health admin view (brief §8, principle 2).
 export async function listSources(): Promise<Source[]> {
-  const pool = await getPool();
-  const result = await pool
-    .request()
-    .query<SourceRow>('SELECT * FROM sources ORDER BY display_name');
-  return result.recordset.map(rowToSource);
+  const container = getContainer('sources');
+  const { resources } = await container.items
+    .query<Source>('SELECT * FROM c ORDER BY c.displayName')
+    .fetchAll();
+  return resources.map(toSource);
 }

@@ -10,11 +10,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@f1-job-radar/schema": "*",
-    "mssql": "^11.0.1"
+    "@azure/cosmos": "^4.2.0",
+    "@f1-job-radar/schema": "*"
   },
   "devDependencies": {
-    "@types/mssql": "^9.1.5",
     "typescript": "^5.7.3",
     "vitest": "^3.0.4"
   }

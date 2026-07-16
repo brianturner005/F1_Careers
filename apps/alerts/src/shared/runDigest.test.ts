@@ -25,7 +25,6 @@ vi.mock('@f1-job-radar/db', () => ({
   markSavedSearchAlerted: markSavedSearchAlertedMock,
   recordAlert: recordAlertMock,
   getUserById: getUserByIdMock,
-  withDbConnection: (fn: () => Promise<unknown>) => fn(),
 }));
 
 vi.mock('@f1-job-radar/email', () => ({
@@ -76,7 +75,7 @@ describe('runDigest', () => {
       expect.objectContaining({ search: 'sre', firstSeenAfter: '2026-07-01T00:00:00.000Z' }),
     );
     expect(sendMock).toHaveBeenCalledWith(expect.objectContaining({ to: 'brian@example.com' }));
-    expect(markSavedSearchAlertedMock).toHaveBeenCalledWith('s1', '2026-07-09T12:00:00.000Z');
+    expect(markSavedSearchAlertedMock).toHaveBeenCalledWith('s1', 'u1', '2026-07-09T12:00:00.000Z');
     expect(recordAlertMock).toHaveBeenCalledWith({
       savedSearchId: 's1',
       sentAt: '2026-07-09T12:00:00.000Z',

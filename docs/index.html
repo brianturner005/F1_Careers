@@ -371,8 +371,8 @@
         <section>
           <h2>What's built</h2>
           <p class="lede">
-            Seven sources flowing end-to-end today: collector → normalize/dedupe/diff → Azure SQL →
-            API → web feed. 102 unit tests across 7 workspaces, plus full account/search flows
+            Seven sources flowing end-to-end today: collector → normalize/dedupe/diff → Azure Cosmos
+            DB → API → web feed. 102 unit tests across 7 workspaces, plus full account/search flows
             verified in a real browser against a mock API.
           </p>
           <div class="card-grid">
@@ -471,15 +471,15 @@
         <section>
           <h2>Architecture</h2>
           <p class="lede">
-            Azure end-to-end: consumption-plan Functions, serverless SQL, a static web app —
-            designed to run for low tens of dollars a month or less.
+            Azure end-to-end: consumption-plan Functions, Cosmos DB (free tier), a static web app —
+            genuinely $0/month at this scale, not just "low tens of dollars."
           </p>
           <div class="flow">
             <div class="flow-step">Collectors (timer)</div>
             <div class="flow-arrow">→</div>
             <div class="flow-step">Normalize / dedupe / diff</div>
             <div class="flow-arrow">→</div>
-            <div class="flow-step">Azure SQL</div>
+            <div class="flow-step">Cosmos DB</div>
             <div class="flow-arrow">→</div>
             <div class="flow-step">API (HTTP)</div>
             <div class="flow-arrow">→</div>
@@ -498,7 +498,7 @@
             <span class="stack-chip">TypeScript end-to-end</span>
             <span class="stack-chip">React + Vite</span>
             <span class="stack-chip">Azure Functions (Node)</span>
-            <span class="stack-chip">Azure SQL (serverless)</span>
+            <span class="stack-chip">Azure Cosmos DB (free tier)</span>
             <span class="stack-chip">Azure Static Web Apps</span>
             <span class="stack-chip">Bicep (IaC)</span>
             <span class="stack-chip">GitHub Actions CI/CD</span>

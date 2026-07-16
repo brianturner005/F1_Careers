@@ -6,7 +6,6 @@ import {
 } from '@azure/functions';
 import { getUserById } from '@f1-job-radar/db';
 import { requireSession } from '../shared/requireSession.js';
-import { withDb } from '../shared/withDb.js';
 
 export async function getMe(
   request: HttpRequest,
@@ -30,5 +29,5 @@ app.http('getMe', {
   route: 'auth/me',
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: withDb(getMe),
+  handler: getMe,
 });

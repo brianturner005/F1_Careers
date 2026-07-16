@@ -12,7 +12,6 @@ import {
 } from '@f1-job-radar/schema';
 import { readJsonBody } from '../shared/readJsonBody.js';
 import { requireSession } from '../shared/requireSession.js';
-import { withDb } from '../shared/withDb.js';
 
 const FILTER_KEYS = [
   'company',
@@ -81,5 +80,5 @@ app.http('createSavedSearch', {
   route: 'saved-searches',
   methods: ['POST'],
   authLevel: 'anonymous',
-  handler: withDb(createSavedSearch),
+  handler: createSavedSearch,
 });

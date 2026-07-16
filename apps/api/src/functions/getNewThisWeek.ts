@@ -5,7 +5,6 @@ import {
   type InvocationContext,
 } from '@azure/functions';
 import { listOpenJobs } from '@f1-job-radar/db';
-import { withDb } from '../shared/withDb.js';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
@@ -37,5 +36,5 @@ app.http('getNewThisWeek', {
   route: 'jobs/new-this-week',
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: withDb(getNewThisWeek),
+  handler: getNewThisWeek,
 });

@@ -13,7 +13,7 @@ See `docs/` for the full project brief and source survey.
 ## Status: Phase 3 (in progress)
 
 Seven sources flowing end-to-end: collector → normalize/dedupe/diff → Azure
-SQL → API → web feed:
+Cosmos DB → API → web feed:
 
 - Red Bull Racing, Mercedes-AMG Petronas, Alpine, Formula One Management — all Workday
 - Aston Martin Aramco — Pinpoint
@@ -30,7 +30,7 @@ delete). Real email sending needs a Resend API key configured at deploy time
 console-log emails instead of sending them.
 
 Phase 3 additions: a Hiring Trends view (postings-opened-per-company over a
-configurable window, derived entirely from existing `first_seen_at`
+configurable window, derived entirely from existing `firstSeenAt`
 history — no new data collection needed) and a "New This Week" shareable
 page grouped by team.
 
@@ -55,7 +55,7 @@ apps/
   alerts/      Azure Functions timer triggers: daily/weekly digest worker
 packages/
   schema/      Shared TypeScript types (Job, Source, User, SavedSearch, enums)
-  db/          Azure SQL access layer shared by api, collectors, and alerts
+  db/          Azure Cosmos DB access layer shared by api, collectors, and alerts
   email/       EmailSender abstraction (Resend, or console-log fallback)
 infra/         Bicep templates for the Azure resources
 docs/          Project brief, source survey (docs/sources.md)
@@ -77,9 +77,12 @@ To run the API, collectors, or alerts Functions locally you'll also need the
 installed globally (`npm install -g azure-functions-core-tools@4`, not a
 project dependency — its postinstall downloads a native CLI binary that
 doesn't belong pinned per-workspace) and a `local.settings.json` (copy
-`local.settings.json.example` in each app and fill in `SQL_CONNECTION_STRING`;
-`api` and `alerts` also take `RESEND_API_KEY`/`EMAIL_FROM`, and `api` takes
-`WEB_BASE_URL` for building magic-link URLs).
+`local.settings.json.example` in each app and fill in
+`COSMOS_CONNECTION_STRING`/`COSMOS_DATABASE_NAME`; `api` and `alerts` also
+take `RESEND_API_KEY`/`EMAIL_FROM`, and `api` takes `WEB_BASE_URL` for
+building magic-link URLs). Run `node scripts/seed-cosmos.mjs` once against
+a fresh Cosmos account to populate the `sources` container before the first
+collector run.
 
 ```sh
 # apps/api, apps/collectors, or apps/alerts

@@ -3,8 +3,6 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "prefix": { "value": "f1jobradar" },
-    "environmentName": { "value": "dev" },
-    "sqlAdminLogin": { "value": "REPLACE_ME" },
-    "sqlAdminPassword": { "value": "REPLACE_ME" }
+    "environmentName": { "value": "dev" }
   }
 }

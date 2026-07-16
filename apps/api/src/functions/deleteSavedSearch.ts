@@ -6,7 +6,6 @@ import {
 } from '@azure/functions';
 import { deleteSavedSearch as deleteSavedSearchRow } from '@f1-job-radar/db';
 import { requireSession } from '../shared/requireSession.js';
-import { withDb } from '../shared/withDb.js';
 
 export async function deleteSavedSearch(
   request: HttpRequest,
@@ -32,5 +31,5 @@ app.http('deleteSavedSearch', {
   route: 'saved-searches/{id}',
   methods: ['DELETE'],
   authLevel: 'anonymous',
-  handler: withDb(deleteSavedSearch),
+  handler: deleteSavedSearch,
 });

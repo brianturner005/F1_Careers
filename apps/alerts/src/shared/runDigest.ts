@@ -4,7 +4,6 @@ import {
   listSavedSearchesByFrequency,
   markSavedSearchAlerted,
   recordAlert,
-  withDbConnection,
 } from '@f1-job-radar/db';
 import { createEmailSender, digestEmail } from '@f1-job-radar/email';
 import type { AlertFrequency } from '@f1-job-radar/schema';
@@ -21,14 +20,6 @@ export async function runDigest(
   frequency: AlertFrequency,
   logger: DigestLogger,
   now: Date = new Date(),
-): Promise<void> {
-  return withDbConnection(() => runDigestInternal(frequency, logger, now));
-}
-
-async function runDigestInternal(
-  frequency: AlertFrequency,
-  logger: DigestLogger,
-  now: Date,
 ): Promise<void> {
   const candidates = await listSavedSearchesByFrequency(frequency);
   const due = selectDueSearches(candidates, frequency, now);
@@ -52,7 +43,7 @@ async function runDigestInternal(
         }
       }
 
-      await markSavedSearchAlerted(search.id, sentAt);
+      await markSavedSearchAlerted(search.id, search.userId, sentAt);
       await recordAlert({ savedSearchId: search.id, sentAt, jobCount: jobs.length, error: null });
       logger.log(`[alerts:${frequency}] ${search.id} matched=${jobs.length}`);
     } catch (err) {

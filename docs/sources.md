@@ -182,7 +182,7 @@ AF Corse (shares infra with an already partially-investigated F1 source).
 
 - Identify with an honest User-Agent (e.g. `F1JobRadarBot/0.1 (+<repo-url>; contact: <email>)`).
 - Poll once daily per source (reduced from an initial 4x/day — job postings
-  don't turn over fast enough to need more, and it's gentler on both the
-  source's servers and Azure SQL serverless auto-pause).
+  don't turn over fast enough to need more, and it's gentler on the
+  source's servers).
 - Respect robots.txt; skip and document here any source that disallows collection.
 - Store only normalized metadata + link to the original posting.

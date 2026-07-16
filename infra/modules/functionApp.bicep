@@ -5,7 +5,10 @@ param storageConnectionString string
 param appInsightsConnectionString string
 
 @secure()
-param sqlConnectionString string
+param dbConnectionString string
+
+@description('Cosmos DB database name -- the connection string is account-level only and doesn\'t encode which database to use.')
+param dbName string
 
 @description('Browser origins allowed to call this Function App. Leave empty for Function Apps nothing in a browser calls directly (collectors, alerts).')
 param corsAllowedOrigins array = []
@@ -48,7 +51,8 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'node' }
           { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' }
           { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsightsConnectionString }
-          { name: 'SQL_CONNECTION_STRING', value: sqlConnectionString }
+          { name: 'COSMOS_CONNECTION_STRING', value: dbConnectionString }
+          { name: 'COSMOS_DATABASE_NAME', value: dbName }
           // Deploys ship a pre-bundled dist/bundle.js with no dependencies
           // to install (see scripts/prepare-function-deploy.mjs) — Oryx has
           // nothing to build here, and running it anyway would try (and

@@ -3,7 +3,8 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "SQL_CONNECTION_STRING": "Server=tcp:<server>.database.windows.net,1433;Database=<db>;Authentication=Active Directory Default;Encrypt=true;",
+    "COSMOS_CONNECTION_STRING": "AccountEndpoint=https://<account>.documents.azure.com:443/;AccountKey=<key>;",
+    "COSMOS_DATABASE_NAME": "f1jobradardb",
     "RESEND_API_KEY": "",
     "EMAIL_FROM": "alerts@yourdomain.example",
     "WEB_BASE_URL": "http://localhost:5173"
