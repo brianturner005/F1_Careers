@@ -15,8 +15,12 @@ name: Deploy
 # zero node_modules and all functions attempt registration correctly.
 
 on:
-  push:
-    branches: [main]
+  # Disabled from firing automatically -- the target Azure resource group
+  # was deleted (this was a cost-controlled portfolio project, not a live
+  # service). Still runnable manually via workflow_dispatch if the
+  # deployment is ever revived; swap back to `push: branches: [main]` at
+  # that point.
+  workflow_dispatch: {}
 
 concurrency:
   group: deploy-${{ github.ref }}
